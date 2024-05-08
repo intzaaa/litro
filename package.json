@@ -11,8 +11,10 @@
   "dependencies": {
     "@preact/signals-core": "^1.6.0",
     "@types/node": "^20.12.10",
+    "@types/picomatch": "^2.3.3",
     "@types/ramda": "^0.30.0",
     "@types/xxhashjs": "^0.2.4",
+    "get-caller-file": "^2.0.5",
     "lit": "^3.1.2",
     "picomatch": "^4.0.2",
     "ramda": "^0.30.0",

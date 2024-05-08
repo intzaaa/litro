@@ -9,6 +9,7 @@ import { customElement } from "lit/decorators.js";
 import { RegistryEntry, register } from "./registry";
 import getCallerPath from "get-caller-file";
 import path from "path";
+import R from "ramda";
 
 function base(type: RegistryEntry["type"]): any;
 function base(type: RegistryEntry["type"], matcher: string, id?: string): any;
@@ -27,7 +28,7 @@ function base(type: RegistryEntry["type"], id?: string, matcher?: string | Regis
     return (target: any) => {
       const filePath = getCallerPath();
       if (!filePath) throw new Error("Cannot determine scope");
-      register(type, path.relative(process.cwd(), filePath), undefined, target);
+      register(type, path.relative(process.cwd(), filePath), id, target);
       return customElement(path.basename(filePath))(target);
     };
   }
@@ -45,36 +46,8 @@ function base(type: RegistryEntry["type"], id?: string, matcher?: string | Regis
   }
 }
 
-function page(): any;
-function page(matcher: string, id?: string): any;
-function page(id: string, matcher: RegistryEntry["matcher"]): any;
+const page = R.curry(base)("page");
 
-function page(id?: string, matcher?: string | RegistryEntry["matcher"]) {
-  if (!id && !matcher) {
-    return base("page");
-  }
-  if (typeof matcher === "string") {
-    return base("page", matcher, id);
-  }
-  if (id && typeof matcher === "function") {
-    return base("page", id, matcher);
-  }
-}
-
-function template(): any;
-function template(matcher: string, id?: string): any;
-function template(id: string, matcher: RegistryEntry["matcher"]): any;
-
-function template(id?: string, matcher?: string | RegistryEntry["matcher"]) {
-  if (!id && !matcher) {
-    return base("template");
-  }
-  if (typeof matcher === "string") {
-    return base("template", matcher, id);
-  }
-  if (id && typeof matcher === "function") {
-    return base("template", id, matcher);
-  }
-}
+const template = R.curry(base)("template");
 
 export { page, template };

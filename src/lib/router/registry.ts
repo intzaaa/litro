@@ -18,26 +18,35 @@ export type RegistryEntry = {
   type: "page" | "template";
   matcher: (path: string) => boolean;
   hash: string;
-  component: any;
+  component?: any;
 };
 
 const registry = signal<RegistryEntry[]>([]);
 
-const generatePathMatcher = (plainScope: string) => (path: string) => {
+const scopeMatcher = (plainScope: string) => (path: string) => {
   const isMatch = pm(plainScope);
   return isMatch(path);
 };
 
-const register = (type: RegistryEntry["type"], matcher: string | RegistryEntry["matcher"], component: RegistryEntry["component"], id: string) => {
+function register(type: RegistryEntry["type"], matcher: string, id?: string, component?: RegistryEntry["component"]): RegistryEntry[];
+function register(type: RegistryEntry["type"], matcher: RegistryEntry["matcher"], id: string, component?: RegistryEntry["component"]): RegistryEntry[];
+
+function register(type: RegistryEntry["type"], matcher: string | RegistryEntry["matcher"], id?: string, component?: RegistryEntry["component"]) {
+  if (!id && typeof matcher === "string") {
+    id = matcher;
+  }
+  if (!id) {
+    throw new Error("Cannot determine id");
+  }
   if (typeof matcher === "string") {
-    matcher = generatePathMatcher(matcher);
+    matcher = scopeMatcher(matcher);
   }
   H.init(0);
   const hash = H.update(id).digest().toString(16);
   const entry = { type, matcher, hash, component };
   R.append(entry, registry.value);
   return registry.value;
-};
+}
 
 const unregister = (hash: RegistryEntry["hash"]) => {
   registry.value = R.filter((item: RegistryEntry) => item.hash !== hash, registry.value);
@@ -59,4 +68,4 @@ const visit = (path: string) => {
   return R.filter((item: RegistryEntry) => item.matcher(path), registry.value);
 };
 
-export { registry, register, unregister, unregisterByScope as unregisterScope, visit };
+export { registry, scopeMatcher, register, unregister, unregisterByScope as unregisterScope, visit };

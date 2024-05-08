@@ -1,7 +1,8 @@
-import { LitElement, css, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
-import litLogo from './assets/lit.svg'
-import viteLogo from '/vite.svg'
+import { LitElement, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import litLogo from "./assets/lit.svg";
+import viteLogo from "/vite.svg";
+import { page } from "./lib/router/decorator";
 
 /**
  * An example element.
@@ -9,42 +10,54 @@ import viteLogo from '/vite.svg'
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement('my-element')
+@page()
 export class MyElement extends LitElement {
   /**
    * Copy for the read the docs hint.
    */
   @property()
-  docsHint = 'Click on the Vite and Lit logos to learn more'
+  docsHint = "Click on the Vite and Lit logos to learn more";
 
   /**
    * The number of times the button has been clicked.
    */
   @property({ type: Number })
-  count = 0
+  count = 0;
 
   render() {
     return html`
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src=${viteLogo} class="logo" alt="Vite logo" />
+        <a
+          href="https://vitejs.dev"
+          target="_blank">
+          <img
+            src=${viteLogo}
+            class="logo"
+            alt="Vite logo" />
         </a>
-        <a href="https://lit.dev" target="_blank">
-          <img src=${litLogo} class="logo lit" alt="Lit logo" />
+        <a
+          href="https://lit.dev"
+          target="_blank">
+          <img
+            src=${litLogo}
+            class="logo lit"
+            alt="Lit logo" />
         </a>
       </div>
       <slot></slot>
       <div class="card">
-        <button @click=${this._onClick} part="button">
+        <button
+          @click=${this._onClick}
+          part="button">
           count is ${this.count}
         </button>
       </div>
       <p class="read-the-docs">${this.docsHint}</p>
-    `
+    `;
   }
 
   private _onClick() {
-    this.count++
+    this.count++;
   }
 
   static styles = css`
@@ -117,11 +130,11 @@ export class MyElement extends LitElement {
         background-color: #f9f9f9;
       }
     }
-  `
+  `;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'my-element': MyElement
+    "my-element": MyElement;
   }
 }

@@ -26,6 +26,9 @@ importers:
       get-caller-file:
         specifier: ^2.0.5
         version: 2.0.5
+      hash-wasm:
+        specifier: ^4.11.0
+        version: 4.11.0
       lit:
         specifier: ^3.1.2
         version: 3.1.3
@@ -319,6 +322,9 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
+  hash-wasm@4.11.0:
+    resolution: {integrity: sha512-HVusNXlVqHe0fzIzdQOGolnFN6mX/fqcrSAOcTBXdvzrXVHwTz11vXeKRmkR5gTuwVpvHZEIyKoePDvuAR+XwQ==}
+
   lit-element@4.0.5:
     resolution: {integrity: sha512-iTWskWZEtn9SyEf4aBG6rKT8GABZMrTWop1+jopsEOgEcugcXJGKuX5bEbkq9qfzY+XB4MAgCaSPwnNpdsNQ3Q==}
 
@@ -578,6 +584,8 @@ snapshots:
     optional: true
 
   get-caller-file@2.0.5: {}
+
+  hash-wasm@4.11.0: {}
 
   lit-element@4.0.5:
     dependencies:

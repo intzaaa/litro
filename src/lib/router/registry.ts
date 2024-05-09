@@ -9,53 +9,58 @@
  */
 
 import { signal } from "@preact/signals-core";
-import { h32 } from "xxhashjs";
-const H = h32(0);
 import R from "ramda";
 import pm from "picomatch";
 
-export type RegistryEntry = {
-  type: "page" | "template";
-  matcher: (path: string) => boolean;
-  hash: string;
-  component?: any;
-};
+export type Matcher = (path: string) => boolean;
 
-const registry = signal<RegistryEntry[]>([]);
+class RouterRegistryEntry {
+  constructor(matcher: Matcher, id: string, hash: string) {
+    this.matcher = matcher;
+    this.id = id;
+    this.hash = hash;
+  }
+  public matcher: Matcher;
+  public id: string;
+  public hash: string;
+  public get name() {
+    return `tit-${this.hash}`;
+  }
+}
+
+export class RouterRegistryPageEntry extends RouterRegistryEntry {
+  constructor(matcher: Matcher, id: string, hash: string) {
+    super(matcher, id, hash);
+  }
+
+  readonly type = "page";
+}
+
+export class RouterRegistryTemplateEntry extends RouterRegistryEntry {
+  constructor(matcher: Matcher, priority: number, id: string, hash: string) {
+    super(matcher, id, hash);
+    this.priority = priority;
+  }
+  public priority: number;
+
+  readonly type = "template";
+}
+
+const routerRegistry = signal<(RouterRegistryPageEntry | RouterRegistryTemplateEntry)[]>([]);
 
 const scopeMatcher = (plainScope: string) => (path: string) => {
   const isMatch = pm(plainScope);
   return isMatch(path);
 };
 
-function register(type: RegistryEntry["type"], matcher: string, id?: string, component?: RegistryEntry["component"]): RegistryEntry[];
-function register(type: RegistryEntry["type"], matcher: RegistryEntry["matcher"], id: string, component?: RegistryEntry["component"]): RegistryEntry[];
-
-function register(type: RegistryEntry["type"], matcher: string | RegistryEntry["matcher"], id?: string, component?: RegistryEntry["component"]) {
-  if (!id && typeof matcher === "string") {
-    id = matcher;
-  }
-  if (!id) {
-    throw new Error("Cannot determine id");
-  }
-  if (typeof matcher === "string") {
-    matcher = scopeMatcher(matcher);
-  }
-  H.init(0);
-  const hash = H.update(id).digest().toString(16);
-  const entry = { type, matcher, hash, component };
-  R.append(entry, registry.value);
-  return registry.value;
-}
-
-const unregister = (hash: RegistryEntry["hash"]) => {
-  registry.value = R.filter((item: RegistryEntry) => item.hash !== hash, registry.value);
-  return registry.value;
+const register = (entry: RouterRegistryPageEntry | RouterRegistryTemplateEntry) => {
+  R.append(entry, routerRegistry.value);
+  return routerRegistry.value;
 };
 
-const unregisterByScope = (scope: RegistryEntry["matcher"]) => {
-  registry.value = R.filter((item: RegistryEntry) => item.matcher !== scope, registry.value);
-  return registry.value;
+const unregister = (hash: RouterRegistryPageEntry["hash"]) => {
+  routerRegistry.value = R.filter((item) => item.hash !== hash, routerRegistry.value);
+  return routerRegistry.value;
 };
 
 /**
@@ -65,7 +70,7 @@ const unregisterByScope = (scope: RegistryEntry["matcher"]) => {
  * @returns An array of filtered registry entries.
  */
 const visit = (path: string) => {
-  return R.filter((item: RegistryEntry) => item.matcher(path), registry.value);
+  return R.filter((item) => item.matcher(path), routerRegistry.value);
 };
 
-export { registry, scopeMatcher, register, unregister, unregisterByScope as unregisterScope, visit };
+export { routerRegistry, scopeMatcher, register, unregister, visit };

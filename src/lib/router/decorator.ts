@@ -6,48 +6,44 @@
  */
 
 import { customElement } from "lit/decorators.js";
-import { RegistryEntry, register } from "./registry";
+import { Matcher, RouterRegistryPageEntry, RouterRegistryTemplateEntry, register, scopeMatcher } from "./registry";
 import getCallerPath from "get-caller-file";
 import path from "path";
+import { createXXHash3 } from "hash-wasm";
+const xxh = await createXXHash3();
 import R from "ramda";
 
-function base(type: RegistryEntry["type"]): any;
-function base(type: RegistryEntry["type"], matcher: string, id?: string): any;
-function base(type: RegistryEntry["type"], id: string, matcher: RegistryEntry["matcher"]): any;
-
-/**
- * Decorator function for registering a component.
- *
- * @param type - The type of the component.
- * @param id - The ID of the component.
- * @param matcher - The matcher for the component.
- * @returns A decorator function that registers the component.
- */
-function base(type: RegistryEntry["type"], id?: string, matcher?: string | RegistryEntry["matcher"]) {
-  if (!id && !matcher) {
-    return (target: any) => {
-      const filePath = getCallerPath();
-      if (!filePath) throw new Error("Cannot determine scope");
-      register(type, path.relative(process.cwd(), filePath), id, target);
-      return customElement(path.basename(filePath))(target);
-    };
+function base(type: "page" | "template", id?: string, matcher?: string | Matcher, priority?: number) {
+  const filePath = getCallerPath()!;
+  if (!id) {
+    id = R.uncurryN(1, R.pipe(path.normalize, R.curry(path.relative)(process.cwd())))(filePath) as string;
+  }
+  if (!matcher) {
+    matcher = scopeMatcher(filePath);
   }
   if (typeof matcher === "string") {
-    return (target: any) => {
-      register(type, matcher, id, target);
-      return customElement(matcher)(target);
-    };
+    matcher = scopeMatcher(matcher);
   }
-  if (id && typeof matcher === "function") {
-    return (target: any) => {
-      register(type, matcher, id, target);
-      return customElement(id)(target);
-    };
+  xxh.init();
+  xxh.update(id);
+  const hash = xxh.digest().toString();
+  switch (type) {
+    case "page":
+      {
+        register(new RouterRegistryPageEntry(matcher, id, hash));
+      }
+      break;
+    case "template":
+      {
+        register(new RouterRegistryTemplateEntry(matcher, priority ?? 0, id, hash));
+      }
+      break;
   }
+  return customElement(id);
 }
 
-const page = R.curry(base)("page");
+const page = (id?: string, matcher?: string | Matcher) => base("page", id, matcher);
 
-const template = R.curry(base)("template");
+const template = (id?: string, matcher?: string | Matcher, priority?: number) => base("template", id, matcher, priority);
 
-export { page, template };
+export { base, page, template };

@@ -8,9 +8,10 @@
  *
  */
 
-import { signal } from "@preact/signals-core";
-import R from "ramda";
+import { effect, signal } from "@preact/signals-core";
+import * as R from "ramda";
 import pm from "picomatch";
+import { config } from "../config";
 
 export type Matcher = (path: string) => boolean;
 
@@ -24,7 +25,7 @@ class RouterRegistryEntry {
   public id: string;
   public hash: string;
   public get name() {
-    return `tit-${this.hash}`;
+    return `${config.prefix}-${this.hash}`;
   }
 }
 
@@ -48,12 +49,17 @@ export class RouterRegistryTemplateEntry extends RouterRegistryEntry {
 
 const routerRegistry = signal<(RouterRegistryPageEntry | RouterRegistryTemplateEntry)[]>([]);
 
+effect(() => {
+  console.log("Router registry updated", routerRegistry.value);
+});
+
 const scopeMatcher = (plainScope: string) => (path: string) => {
   const isMatch = pm(plainScope);
   return isMatch(path);
 };
 
 const register = (entry: RouterRegistryPageEntry | RouterRegistryTemplateEntry) => {
+  console.log("Registering entry", entry);
   R.append(entry, routerRegistry.value);
   return routerRegistry.value;
 };
@@ -70,6 +76,7 @@ const unregister = (hash: RouterRegistryPageEntry["hash"]) => {
  * @returns An array of filtered registry entries.
  */
 const visit = (path: string) => {
+  console.log("Visiting path", path);
   return R.filter((item) => item.matcher(path), routerRegistry.value);
 };
 

@@ -10,8 +10,8 @@ import { page } from "./lib/router/decorator";
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@page()
-export class MyElement extends LitElement {
+@page("/", "my-element")
+export default class MyElement extends LitElement {
   /**
    * Copy for the read the docs hint.
    */

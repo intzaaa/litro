@@ -10,44 +10,39 @@
 
 import { customElement } from "lit/decorators.js";
 import { Matcher, RouterRegistryPageEntry, RouterRegistryTemplateEntry, register, scopeMatcher } from "./registry";
-import getCallerPath from "get-caller-file";
-import path from "path-browserify";
 import md5 from "md5";
-import * as R from "ramda";
-import { config } from "../config";
 
-function basic(type: "page" | "template", matcher?: string | Matcher, id?: string, priority?: number) {
-  const filePath = getCallerPath()!;
-  const relativePath = R.uncurryN(1, R.pipe(path.normalize, R.curry(path.relative)(path.resolve(process.cwd(), config.basePath))))(filePath) as string;
-  console.log("Get caller path:", filePath, relativePath);
-  if (!id) {
-    const _id: string = relativePath;
-    id = _id;
+function basic(type: "page" | "template", matcher: string | Matcher, id?: string, priority: number = 0) {
+  if (!id && typeof matcher === "string") {
+    id = "tit-" + md5(matcher);
   }
-  if (!matcher) {
-    matcher = scopeMatcher(relativePath);
-  }
+  if (!id) throw new Error("Could not determine id");
   if (typeof matcher === "string") {
     matcher = scopeMatcher(matcher);
   }
-  const hash = md5(id);
   switch (type) {
     case "page":
       {
-        register(new RouterRegistryPageEntry(matcher, id, hash));
+        register(new RouterRegistryPageEntry(matcher, id));
       }
       break;
     case "template":
       {
-        register(new RouterRegistryTemplateEntry(matcher, priority ?? 0, id, hash));
+        register(new RouterRegistryTemplateEntry(matcher, priority ?? 0, id));
       }
       break;
   }
   return customElement(id);
 }
 
-const page = (matcher?: string | Matcher, id?: string) => basic("page", matcher, id);
+const page: {
+  (matcher: string, id?: string): ClassDecorator;
+  (matcher: Matcher, id: string): ClassDecorator;
+} = (matcher: string | Matcher, id?: string) => basic("page", matcher, id);
 
-const template = (matcher?: string | Matcher, id?: string, priority?: number) => basic("template", matcher, id, priority);
+const template: {
+  (priority: number, matcher: string, id?: string): ClassDecorator;
+  (priority: number, matcher: Matcher, id: string): ClassDecorator;
+} = (priority: number = 0, matcher: string | Matcher, id?: string) => basic("template", matcher, id, priority);
 
-export { basic, page, template };
+export { page, template };

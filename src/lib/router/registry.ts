@@ -11,35 +11,29 @@
 import { effect, signal } from "@preact/signals-core";
 import * as R from "ramda";
 import pm from "picomatch";
-import { config } from "../config";
 
 export type Matcher = (path: string) => boolean;
 
 class RouterRegistryEntry {
-  constructor(matcher: Matcher, id: string, hash: string) {
+  constructor(matcher: Matcher, id: string) {
     this.matcher = matcher;
     this.id = id;
-    this.hash = hash;
   }
   public matcher: Matcher;
   public id: string;
-  public hash: string;
-  public get name() {
-    return `${config.prefix}-${this.hash}`;
-  }
 }
 
 export class RouterRegistryPageEntry extends RouterRegistryEntry {
-  constructor(matcher: Matcher, id: string, hash: string) {
-    super(matcher, id, hash);
+  constructor(matcher: Matcher, id: string) {
+    super(matcher, id);
   }
 
   readonly type = "page";
 }
 
 export class RouterRegistryTemplateEntry extends RouterRegistryEntry {
-  constructor(matcher: Matcher, priority: number, id: string, hash: string) {
-    super(matcher, id, hash);
+  constructor(matcher: Matcher, priority: number, id: string) {
+    super(matcher, id);
     this.priority = priority;
   }
   public priority: number;
@@ -60,12 +54,12 @@ const scopeMatcher = (plainScope: string) => (path: string) => {
 
 const register = (entry: RouterRegistryPageEntry | RouterRegistryTemplateEntry) => {
   console.log("Registering entry", entry);
-  R.append(entry, routerRegistry.value);
+  routerRegistry.value = [...routerRegistry.value, entry];
   return routerRegistry.value;
 };
 
-const unregister = (hash: RouterRegistryPageEntry["hash"]) => {
-  routerRegistry.value = R.filter((item) => item.hash !== hash, routerRegistry.value);
+const unregister = (id: RouterRegistryPageEntry["id"]) => {
+  routerRegistry.value = R.filter((item) => item.id !== id, routerRegistry.value);
   return routerRegistry.value;
 };
 
@@ -76,7 +70,7 @@ const unregister = (hash: RouterRegistryPageEntry["hash"]) => {
  * @returns An array of filtered registry entries.
  */
 const visit = (path: string) => {
-  console.log("Visiting path", path);
+  console.log("Visiting path", path, "with entries", routerRegistry.value);
   return R.filter((item) => item.matcher(path), routerRegistry.value);
 };
 

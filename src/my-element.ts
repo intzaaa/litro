@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import litLogo from "./assets/lit.svg";
 import viteLogo from "/vite.svg";
-import { page } from "./lib/router/decorator";
+import { page, template } from "./lib/router/decorator";
 
 /**
  * An example element.
@@ -10,7 +10,7 @@ import { page } from "./lib/router/decorator";
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@page("/", "my-element")
+@page("/**")
 export default class MyElement extends LitElement {
   /**
    * Copy for the read the docs hint.
@@ -136,5 +136,12 @@ export default class MyElement extends LitElement {
 declare global {
   interface HTMLElementTagNameMap {
     "my-element": MyElement;
+  }
+}
+
+@template(1, "/")
+export class Home extends LitElement {
+  render() {
+    return html`<slot></slot>`;
   }
 }

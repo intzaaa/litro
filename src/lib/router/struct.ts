@@ -10,8 +10,7 @@
 
 import * as R from "ramda";
 import { RouterRegistryPageEntry, RouterRegistryTemplateEntry, visit } from "./registry";
-import { unsafeStatic } from "lit/static-html.js";
-import { html } from "lit";
+import { html, unsafeStatic } from "lit/static-html.js";
 
 const struct = (path: string) => {
   const elements = visit(path);
@@ -26,9 +25,9 @@ const struct = (path: string) => {
   const stack = (x: string, y = html``) => {
     return html`<${unsafeStatic(x)}>${y}</${unsafeStatic(x)}>`;
   };
-  let struct = stack(page.name);
+  let struct = stack(page.id);
   template.forEach((item) => {
-    struct = stack(item.name, struct);
+    struct = stack(item.id, struct);
   });
   return struct;
 };

@@ -9,22 +9,22 @@
  */
 
 import * as R from "ramda";
-import { RouterRegistryPageEntry, RouterRegistryTemplateEntry, visit } from "./registry.ts";
+import { PageEntry, TemplateEntry, visit } from "./registry.ts";
 import { html, unsafeStatic } from "lit/static-html.js";
+import "./components/404.ts";
+import log from "loglevel";
 
 const struct = (path: string) => {
   const elements = visit(path);
-  const pages = elements.filter((item) => item instanceof RouterRegistryPageEntry) as RouterRegistryPageEntry[];
-  if (pages.length === 0) throw new Error(`No page matchers: ${JSON.stringify(path)}`);
-  if (pages.length > 1) throw new Error(`Conflict page matchers: ${JSON.stringify(elements)}`);
-  const page: RouterRegistryPageEntry = pages[0];
-  const template: RouterRegistryTemplateEntry[] = R.reverse(
-    R.sortBy(R.prop("priority"), elements.filter((item) => item.type === "template") as RouterRegistryTemplateEntry[])
-  );
+  const pages = elements.filter((item) => item instanceof PageEntry) as PageEntry[];
+  if (pages.length === 0) log.error(`No page matchers: ${JSON.stringify(path)}`);
+  if (pages.length > 1) log.error(`Conflict page matchers: ${JSON.stringify(elements)}`);
+  const page = pages[0];
+  const template: TemplateEntry[] = R.reverse(R.sortBy(R.prop("priority"), elements.filter((item) => item.type === "template") as TemplateEntry[]));
   const stack = (x: string, y = html``) => {
     return html`<${unsafeStatic(x)}>${y}</${unsafeStatic(x)}>`;
   };
-  return R.reduce((acc, item) => stack(item.id, acc), stack(page.id), template);
+  return R.reduce((acc, item) => stack(item.id, acc), stack(page?.id ?? "tit-not-found"), template);
 };
 
 export { struct };

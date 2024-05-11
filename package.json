@@ -1,9 +1,27 @@
 {
   "name": "tit",
-  "private": true,
-  "version": "0.0.0",
+  "description": "A bland and boring router and styler for lit.",
+  "keywords": [
+    "lit",
+    "router",
+    "styler",
+    "tit"
+  ],
+  "author": {
+    "name": "Intza",
+    "url": "https://intza.top"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intzaaa/tit"
+  },
+  "version": "0.0.1",
   "type": "module",
+  "engines": {
+    "node": ">= 20"
+  },
   "scripts": {
+    "dev": "tsup --watch",
     "build": "tsup"
   },
   "dependencies": {
@@ -21,14 +39,19 @@
     "ramda": "^0.30.0"
   },
   "devDependencies": {
+    "loglevel": "^1.9.1",
     "tsup": "^8.0.2",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.11"
+    "typescript": "^5.2.2"
   },
   "exports": {
     ".": {
-      "default": "./dist/index.js",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./router": {
+      "import": "./dist/router/index.js",
+      "types": "./dist/router/index.d.ts"
     }
-  }
+  },
+  "license": "Apache-2.0"
 }

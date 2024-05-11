@@ -9,32 +9,38 @@
  */
 
 import { customElement } from "lit/decorators.js";
-import { Matcher, RouterRegistryPageEntry, RouterRegistryTemplateEntry, register, scopeMatcher } from "./registry.ts";
+import { InputMatcher, PageEntry, TemplateEntry, register, constructGlobMatcher } from "./registry.ts";
 import { md5 } from "js-md5";
 import { config } from "../config.ts";
 
-function basic(type: "page" | "template", matcher: string | Matcher, id?: string, priority: number = 0) {
+function basic(type: "page" | "template", matcher: InputMatcher, id?: string, priority: number = 0) {
   if (!id) {
-    id = config.prefix + "-" + md5(Math.random().toString());
+    id = config.value.prefix + "-" + md5(Math.random().toString());
   }
   if (typeof matcher === "string") {
-    matcher = scopeMatcher(matcher);
+    matcher = constructGlobMatcher(matcher);
+  }
+  if (Array.isArray(matcher)) {
+    matcher = constructGlobMatcher(matcher.join("|"));
+  }
+  if (matcher instanceof RegExp) {
+    matcher = constructGlobMatcher(matcher.source);
   }
   switch (type) {
     case "page":
       {
-        register(new RouterRegistryPageEntry(matcher, id));
+        register(new PageEntry(matcher, id));
       }
       break;
     case "template":
       {
-        register(new RouterRegistryTemplateEntry(matcher, priority ?? 0, id));
+        register(new TemplateEntry(matcher, priority ?? 0, id));
       }
       break;
   }
   return customElement(id);
 }
 
-export const page = (matcher: string | Matcher, id?: string) => basic("page", matcher, id);
+export const page = (matcher: InputMatcher, id?: string) => basic("page", matcher, id);
 
-export const template = (priority: number = 0, matcher: string | Matcher, id?: string) => basic("template", matcher, id, priority);
+export const template = (priority: number = 0, matcher: InputMatcher, id?: string) => basic("template", matcher, id, priority);

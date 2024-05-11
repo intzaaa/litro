@@ -11,28 +11,30 @@
 import { effect, signal } from "@preact/signals-core";
 import * as R from "ramda";
 import pm from "picomatch/posix";
+import log from "loglevel";
 
-export type Matcher = (path: string) => boolean;
+export type InputMatcher = FunctionMatcher | string | string[] | RegExp;
+type FunctionMatcher = (path: string) => boolean;
 
-class RouterRegistryEntry {
-  constructor(matcher: Matcher, id: string) {
+class RegistryEntry {
+  constructor(matcher: FunctionMatcher, id: string) {
     this.matcher = matcher;
     this.id = id;
   }
-  public matcher: Matcher;
-  public id: string;
+  public matcher;
+  public id;
 }
 
-export class RouterRegistryPageEntry extends RouterRegistryEntry {
-  constructor(matcher: Matcher, id: string) {
+export class PageEntry extends RegistryEntry {
+  constructor(matcher: FunctionMatcher, id: string) {
     super(matcher, id);
   }
 
   readonly type = "page";
 }
 
-export class RouterRegistryTemplateEntry extends RouterRegistryEntry {
-  constructor(matcher: Matcher, priority: number, id: string) {
+export class TemplateEntry extends RegistryEntry {
+  constructor(matcher: FunctionMatcher, priority: number, id: string) {
     super(matcher, id);
     this.priority = priority;
   }
@@ -41,24 +43,23 @@ export class RouterRegistryTemplateEntry extends RouterRegistryEntry {
   readonly type = "template";
 }
 
-const registry = signal<(RouterRegistryPageEntry | RouterRegistryTemplateEntry)[]>([]);
+const registry = signal<(PageEntry | TemplateEntry)[]>([]);
 
 effect(() => {
-  console.log("Router registry updated", registry.value);
+  log.info("Router registry updated", registry.value);
 });
 
-const scopeMatcher = (plainScope: string) => (path: string) => {
-  const isMatch = pm(plainScope);
-  return isMatch(path);
-};
+const constructGlobMatcher = (plain: string) => (path: string) => pm(plain)(path);
 
-const register = (entry: RouterRegistryPageEntry | RouterRegistryTemplateEntry) => {
-  console.log("Registering entry", entry);
+const constructRegexMatcher = (regex: RegExp) => (path: string) => regex.test(path);
+
+const register = (entry: PageEntry | TemplateEntry) => {
+  log.info("Registering entry", entry);
   registry.value = [...registry.value, entry];
   return registry.value;
 };
 
-const unregister = (id: RouterRegistryPageEntry["id"]) => {
+const unregister = (id: PageEntry["id"]) => {
   registry.value = R.filter((item) => item.id !== id, registry.value);
   return registry.value;
 };
@@ -70,8 +71,8 @@ const unregister = (id: RouterRegistryPageEntry["id"]) => {
  * @returns An array of filtered registry entries.
  */
 const visit = (path: string) => {
-  console.log("Visiting path", path, "with entries", registry.value);
+  log.info("Visiting path", path, "with entries", registry.value);
   return R.filter((item) => item.matcher(path), registry.value);
 };
 
-export { registry, scopeMatcher, register, unregister, visit };
+export { registry, constructGlobMatcher, constructRegexMatcher, register, unregister, visit };

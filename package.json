@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/intzaaa/tit"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "engines": {
     "node": ">= 20"
@@ -24,6 +24,9 @@
     "dev": "tsup --watch",
     "build": "tsup"
   },
+  "files": [
+    "./dist"
+  ],
   "dependencies": {
     "@preact/signals-core": "^1.6.0",
     "@types/js-md5": "^0.7.2",

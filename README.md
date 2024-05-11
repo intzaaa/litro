@@ -1,9 +1,13 @@
-# tit
+# lit-tit (`lit-lit-tit`)
 
 A bland and boring router and styler for lit.
 
 - [x] router
 - [ ] styler
+
+```sh
+pnpm i lit-tit
+```
 
 ## Usage
 
@@ -11,20 +15,20 @@ A bland and boring router and styler for lit.
 
 1. (You still need to) `import` all the pages and templates
 2. Replace `@customElement` to `@page` or `@template`
-3. Add `<tit-router></tit-router>` your entry file, for example `index.html` if you are using Vite.
+3. Add `<lit-tit-router></lit-tit-router>` your entry file, for example `index.html` if you are using Vite.
 
 ```html
 <!-- index.html (Vite) -->
 
 <head>
   <script type="module">
-    import "tit";
+    import "lit-tit";
     import.meta.glob("/**/*.ts", { eager: true });
   </script>
 </head>
 
 <body>
-  <tit-router></tit-router>
+  <lit-tit-router></lit-tit-router>
 </body>
 ```
 
@@ -32,9 +36,9 @@ A bland and boring router and styler for lit.
 // src/pages/my-page.ts
 
 import { LitElement, html } from "lit";
-import { page} from "tit/router";
+import { page} from "lit-tit/router";
 
-@page("/", "hello-tit")
+@page("/", "hello-lit-tit")
 export class MyPage extends LitElement {
   // ...
 }
@@ -44,7 +48,7 @@ export class MyPage extends LitElement {
 // src/pages/my-template.ts
 
 import { LitElement, html } from "lit";
-import { template } from "tit/router";
+import { template } from "lit-tit/router";
 
 @template(0, (path) => path.includes("goodbye") , "are-you-joking")
 export class MyTemplate extends LitElement {

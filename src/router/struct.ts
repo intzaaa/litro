@@ -9,7 +9,7 @@
  */
 
 import * as R from "ramda";
-import { RouterRegistryPageEntry, RouterRegistryTemplateEntry, visit } from "./registry";
+import { RouterRegistryPageEntry, RouterRegistryTemplateEntry, visit } from "./registry.ts";
 import { html, unsafeStatic } from "lit/static-html.js";
 
 const struct = (path: string) => {
@@ -18,18 +18,13 @@ const struct = (path: string) => {
   if (pages.length === 0) throw new Error(`No page matchers: ${JSON.stringify(path)}`);
   if (pages.length > 1) throw new Error(`Conflict page matchers: ${JSON.stringify(elements)}`);
   const page: RouterRegistryPageEntry = pages[0];
-  const template: RouterRegistryTemplateEntry[] = R.sortBy(
-    R.prop("priority"),
-    elements.filter((item) => item.type === "template") as RouterRegistryTemplateEntry[]
+  const template: RouterRegistryTemplateEntry[] = R.reverse(
+    R.sortBy(R.prop("priority"), elements.filter((item) => item.type === "template") as RouterRegistryTemplateEntry[])
   );
   const stack = (x: string, y = html``) => {
     return html`<${unsafeStatic(x)}>${y}</${unsafeStatic(x)}>`;
   };
-  let struct = stack(page.id);
-  template.forEach((item) => {
-    struct = stack(item.id, struct);
-  });
-  return struct;
+  return R.reduce((acc, item) => stack(item.id, acc), stack(page.id), template);
 };
 
 export { struct };

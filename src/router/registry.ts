@@ -10,7 +10,7 @@
 
 import { effect, signal } from "@preact/signals-core";
 import * as R from "ramda";
-import pm from "picomatch";
+import pm from "picomatch/posix";
 
 export type Matcher = (path: string) => boolean;
 
@@ -41,10 +41,10 @@ export class RouterRegistryTemplateEntry extends RouterRegistryEntry {
   readonly type = "template";
 }
 
-const routerRegistry = signal<(RouterRegistryPageEntry | RouterRegistryTemplateEntry)[]>([]);
+const registry = signal<(RouterRegistryPageEntry | RouterRegistryTemplateEntry)[]>([]);
 
 effect(() => {
-  console.log("Router registry updated", routerRegistry.value);
+  console.log("Router registry updated", registry.value);
 });
 
 const scopeMatcher = (plainScope: string) => (path: string) => {
@@ -54,13 +54,13 @@ const scopeMatcher = (plainScope: string) => (path: string) => {
 
 const register = (entry: RouterRegistryPageEntry | RouterRegistryTemplateEntry) => {
   console.log("Registering entry", entry);
-  routerRegistry.value = [...routerRegistry.value, entry];
-  return routerRegistry.value;
+  registry.value = [...registry.value, entry];
+  return registry.value;
 };
 
 const unregister = (id: RouterRegistryPageEntry["id"]) => {
-  routerRegistry.value = R.filter((item) => item.id !== id, routerRegistry.value);
-  return routerRegistry.value;
+  registry.value = R.filter((item) => item.id !== id, registry.value);
+  return registry.value;
 };
 
 /**
@@ -70,8 +70,8 @@ const unregister = (id: RouterRegistryPageEntry["id"]) => {
  * @returns An array of filtered registry entries.
  */
 const visit = (path: string) => {
-  console.log("Visiting path", path, "with entries", routerRegistry.value);
-  return R.filter((item) => item.matcher(path), routerRegistry.value);
+  console.log("Visiting path", path, "with entries", registry.value);
+  return R.filter((item) => item.matcher(path), registry.value);
 };
 
-export { routerRegistry, scopeMatcher, register, unregister, visit };
+export { registry, scopeMatcher, register, unregister, visit };

@@ -8,11 +8,13 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "declaration": true,
 
     /* Linting */
     "strict": true,

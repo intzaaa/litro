@@ -1,9 +1,11 @@
-# lit-tit (`lit-lit-tit`)
+# tit (`lit-tit`)
 
 A bland and boring router and styler for lit.
 
 - [x] router
 - [ ] styler
+
+## Install
 
 ```sh
 pnpm i lit-tit
@@ -15,7 +17,7 @@ pnpm i lit-tit
 
 1. (You still need to) `import` all the pages and templates
 2. Replace `@customElement` to `@page` or `@template`
-3. Add `<lit-tit-router></lit-tit-router>` your entry file, for example `index.html` if you are using Vite.
+3. Add `<tit-router></tit-router>` your entry file, for example `index.html` if you are using Vite.
 
 ```html
 <!-- index.html (Vite) -->
@@ -28,7 +30,7 @@ pnpm i lit-tit
 </head>
 
 <body>
-  <lit-tit-router></lit-tit-router>
+  <tit-router></tit-router>
 </body>
 ```
 
@@ -36,9 +38,9 @@ pnpm i lit-tit
 // src/pages/my-page.ts
 
 import { LitElement, html } from "lit";
-import { page} from "lit-tit/router";
+import { page } from "lit-tit/router";
 
-@page("/", "hello-lit-tit")
+@page("/", "hello-tit")
 export class MyPage extends LitElement {
   // ...
 }

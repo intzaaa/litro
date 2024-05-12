@@ -15,9 +15,11 @@ pnpm i lit-tit
 
 ### Router
 
-1. (You still need to) `import` all the pages and templates
+1. (You still need to) `import` all the pages and templates, tit can't help you with this
 2. Replace `@customElement` to `@page` or `@template`
 3. Add `<tit-router></tit-router>` your entry file, for example `index.html` if you are using Vite.
+
+#### Example
 
 ```html
 <!-- index.html (Vite) -->

@@ -11,7 +11,7 @@
 import * as R from "ramda";
 import { PageEntry, TemplateEntry, visit } from "./registry.ts";
 import { html, unsafeStatic } from "lit/static-html.js";
-import "./components/404.ts";
+import "./components/not-found.ts";
 import log from "loglevel";
 
 const struct = (path: string) => {

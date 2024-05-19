@@ -3,7 +3,7 @@ import { customElement, state } from "lit/decorators.js";
 import { struct } from "./struct.ts";
 import { location } from "./navigation.ts";
 import { effect } from "@preact/signals-core";
-import "./components/404.ts";
+import "./components/not-found.ts";
 import "./components/link.ts";
 
 @customElement(`tit-router`)

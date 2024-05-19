@@ -5,7 +5,7 @@ export * from "./struct.ts";
 export * from "./navigation.ts";
 
 // Errors
-export * from "./components/404.ts";
+export * from "./components/not-found.ts";
 
 // Components
 export * from "./components/link.ts";

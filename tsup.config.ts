@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["./src/index.ts", "./src/router/index.ts"],
+  entry: ["./src/config.ts", "./src/router/index.ts"],
   format: ["esm"],
   target: "esnext",
   platform: "browser",
@@ -12,4 +12,5 @@ export default defineConfig({
   minify: false,
   shims: true,
   skipNodeModulesBundle: true,
+  external: ["lit"],
 });

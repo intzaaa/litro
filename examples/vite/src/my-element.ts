@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import litLogo from "./assets/lit.svg";
 import viteLogo from "/vite.svg";
-import { page } from "lit-tit/router";
+import { page } from "litro/router";
 
 /**
  * An example element.
@@ -53,7 +53,7 @@ export class MyElement extends LitElement {
         </button>
       </div>
       <p class="read-the-docs">${this.docsHint}</p>
-      <tit-link href="hello"> Hello! </tit-link>
+      <litro-link href="hello"> Hello! </litro-link>
     `;
   }
 

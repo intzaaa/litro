@@ -1,11 +1,11 @@
 {
-  "name": "lit-tit",
-  "description": "A bland and boring router and styler for lit.",
+  "name": "litro",
+  "description": "A simple router for lit.",
   "keywords": [
     "lit",
     "router",
     "styler",
-    "tit"
+    "litro"
   ],
   "author": {
     "name": "Intza",
@@ -13,16 +13,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/intzaaa/tit"
+    "url": "https://github.com/intzaaa/litro"
   },
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "engines": {
     "node": ">= 20"
   },
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "bud": "tsup",
+    "pub": "pnpm bud && pnpm publish --registry=https://registry.npmjs.org"
   },
   "files": [
     "./dist"

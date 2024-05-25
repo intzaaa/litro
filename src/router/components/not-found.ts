@@ -1,7 +1,7 @@
 import { LitElement, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-@customElement(`tit-not-found`)
+@customElement(`litro-not-found`)
 class NotFound extends LitElement {
   @state() private url = window.location;
   static styles = css`
@@ -19,7 +19,7 @@ class NotFound extends LitElement {
     return html`
       <div>
         <h1><code>${this.url.pathname}</code> Not Found</h1>
-        <tit-link href=${this.url.origin}>${this.url.hostname}</tit-link>
+        <litro-link href=${this.url.origin}>${this.url.hostname}</litro-link>
       </div>
     `;
   }
@@ -27,7 +27,7 @@ class NotFound extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "tit-not-found": NotFound;
+    "litro-not-found": NotFound;
   }
 }
 

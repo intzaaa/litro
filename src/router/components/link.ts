@@ -2,7 +2,7 @@ import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { goto } from "../navigation";
 
-@customElement("tit-link")
+@customElement("litro-link")
 class Link extends LitElement {
   @property() public href: string | URL = "";
 
@@ -22,7 +22,7 @@ class Link extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "tit-link": Link;
+    "litro-link": Link;
   }
 }
 

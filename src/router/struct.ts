@@ -24,7 +24,7 @@ const struct = (path: string) => {
   const stack = (x: string, y = html``) => {
     return html`<${unsafeStatic(x)}>${y}</${unsafeStatic(x)}>`;
   };
-  return R.reduce((acc, item) => stack(item.id, acc), stack(page?.id ?? "tit-not-found"), template);
+  return R.reduce((acc, item) => stack(item.id, acc), stack(page?.id ?? "litro-not-found"), template);
 };
 
 export { struct };

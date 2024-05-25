@@ -6,7 +6,7 @@ import { effect } from "@preact/signals-core";
 import "./components/not-found.ts";
 import "./components/link.ts";
 
-@customElement(`tit-router`)
+@customElement(`litro-router`)
 export class Router extends LitElement {
   constructor() {
     super();

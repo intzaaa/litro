@@ -1,2 +1,2 @@
-import "lit-tit/router";
+import "litro/router";
 import.meta.glob("./**/**.ts", { eager: true });

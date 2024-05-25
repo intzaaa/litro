@@ -1,4 +1,4 @@
-# tit (`lit-tit`)
+# litro (`lit-litro`)
 
 A bland and boring router and styler for lit.
 
@@ -8,16 +8,16 @@ A bland and boring router and styler for lit.
 ## Install
 
 ```sh
-pnpm i lit-tit
+pnpm i lit-litro
 ```
 
 ## Usage
 
 ### Router
 
-1. (You still need to) `import` all the pages and templates, tit can't help you with this
+1. (You still need to) `import` all the pages and templates, litro can't help you with this
 2. Replace `@customElement` to `@page` or `@template`
-3. Add `<tit-router></tit-router>` your entry file, for example `index.html` if you are using Vite.
+3. Add `<litro-router></litro-router>` your entry file, for example `index.html` if you are using Vite.
 
 #### Example
 
@@ -26,13 +26,13 @@ pnpm i lit-tit
 
 <head>
   <script type="module">
-    import "lit-tit";
+    import "lit-litro";
     import.meta.glob("/**/*.ts", { eager: true });
   </script>
 </head>
 
 <body>
-  <tit-router></tit-router>
+  <litro-router></litro-router>
 </body>
 ```
 
@@ -40,9 +40,9 @@ pnpm i lit-tit
 // src/pages/my-page.ts
 
 import { LitElement, html } from "lit";
-import { page } from "lit-tit/router";
+import { page } from "lit-litro/router";
 
-@page("/", "hello-tit")
+@page("/", "hello-litro")
 export class MyPage extends LitElement {
   // ...
 }
@@ -52,7 +52,7 @@ export class MyPage extends LitElement {
 // src/pages/my-template.ts
 
 import { LitElement, html } from "lit";
-import { template } from "lit-tit/router";
+import { template } from "lit-litro/router";
 
 @template(0, (path) => path.includes("goodbye") , "are-you-joking")
 export class MyTemplate extends LitElement {
